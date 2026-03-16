@@ -2,13 +2,13 @@
 
 ## 1. Purpose
 
-This document presents the proposed architecture and design for the **Cloud-based Ticket Reservation Application**. It is based on the project README, the current Android project structure, and the database schema supplied in the project brief.
+This document presents the proposed architecture and design for the **Cloud-based Ticket Reservation Application**. It is based on the project README, the intended web-based delivery model for the project, and the database schema supplied in the project brief.
 
 ## 2. Architectural Overview
 
 The system follows a **layered cloud architecture**:
 
-- **Presentation layer**: Android mobile client for customers and administrators
+- **Presentation layer**: browser-based web client for customers and administrators
 - **Application layer**: cloud-hosted services that handle authentication, event management, reservations, and confirmations
 - **Data layer**: relational database storing users, events, venues, categories, reservations, and confirmations
 - **Integration layer**: external email/SMS services for digital confirmations
@@ -21,7 +21,7 @@ This structure supports the README requirements for concurrency, high availabili
 flowchart LR
     Customer[Customer]
     Admin[Administrator]
-    App[Android Mobile App]
+    App[Web Application]
     API[Cloud API / Application Services]
     Auth[Authentication Service]
     EventSvc[Event Management Service]
@@ -48,7 +48,7 @@ flowchart LR
 
 | Component | Responsibility |
 | --- | --- |
-| Android App | Provides screens for registration, browsing, search, reservation, cancellation, and admin event management |
+| Web Application | Provides pages for registration, browsing, search, reservation, cancellation, and admin event management |
 | Authentication Service | Registers users, verifies credentials, and enforces role-based access |
 | Event Management Service | Creates, updates, cancels, and retrieves event information |
 | Reservation Service | Validates availability, creates reservations, updates ticket counts, and handles cancellations |
@@ -160,7 +160,7 @@ classDiagram
 ```mermaid
 sequenceDiagram
     actor Customer
-    participant App as Android App
+    participant App as Web Application
     participant API as Cloud API
     participant EventSvc as Event Service
     participant ResSvc as Reservation Service
@@ -217,7 +217,7 @@ The following ER diagram is the wiki-ready version of the provided database imag
 
 ### Layered Separation
 
-Separating the app, services, and database improves maintainability and supports future testing and deployment changes.
+Separating the web client, services, and database improves maintainability and supports future testing and deployment changes.
 
 ### Relational Data Model
 
@@ -235,12 +235,12 @@ Using status fields such as `ACTIVE`, `CONFIRMED`, and `CANCELLED` simplifies bu
 
 ```mermaid
 flowchart TB
-    Phone[Android Device]
+    Browser[User Web Browser]
     Cloud[Cloud Application Server]
     Database[(Managed Relational Database)]
     Messaging[Email/SMS Gateway]
 
-    Phone --> Cloud
+    Browser --> Cloud
     Cloud --> Database
     Cloud --> Messaging
 ```

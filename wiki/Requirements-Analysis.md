@@ -11,7 +11,7 @@ The application is intended for:
 - **Customers** who want to discover events and reserve tickets.
 - **Administrators / event organizers** who create, update, and cancel events.
 
-Based on the README and the provided database design, the system is assumed to be an **Android client backed by a cloud-hosted service and relational database**.
+Based on the README and the provided database design, the system is assumed to be a **browser-based web application backed by a cloud-hosted service and relational database**.
 
 ## 3. Scope
 
@@ -42,7 +42,7 @@ Based on the README and the provided database design, the system is assumed to b
 
 ## 5. Assumptions and Constraints
 
-- The client application is mobile-first and implemented in Java/Kotlin on Android.
+- The client application is a browser-based web app with a simple, responsive user interface.
 - Core business data is stored in a relational database.
 - Event inventory is managed centrally by the cloud backend.
 - Email and SMS confirmations are sent through external messaging services.
