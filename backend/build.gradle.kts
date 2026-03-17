@@ -9,9 +9,8 @@ group = "com.example"
 version = "0.0.1-SNAPSHOT"
 
 java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(23)
-	}
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
 }
 
 configurations {
@@ -42,6 +41,10 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 	finalizedBy(tasks.jacocoTestReport)
+}
+
+tasks.withType<JavaCompile> {
+	options.release = 21
 }
 
 tasks.jacocoTestReport {
