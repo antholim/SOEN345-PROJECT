@@ -1,5 +1,7 @@
 # Backend ignores
 .gradle
+.gradle-user-home/
+**/.gradle-user-home/
 build/
 !gradle/wrapper/gradle-wrapper.jar
 !**/src/main/**/build/
@@ -50,6 +52,7 @@ node_modules
 dist
 dist-ssr
 *.local
+.env.dev.ps1
 
 # Editor directories and files
 .vscode/*

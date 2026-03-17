@@ -5,6 +5,8 @@ and testing project and write a professional high-quality report.
 The main objection of the application is to develop a ticket booking for events such as movies, concerts, travel, or sports.  
 The Ticket Reservation Application allows users to browse events, reserve tickets, and receive confirmations digitally.  
 The programming language used in this project is Java.  
+For frontend, we have used React
+For backend, we have used Gradle and PostgreSQL
 ## INTENDED USERS
 a. Customers (end users)  
 b. Event organizers / administrators  
@@ -24,3 +26,22 @@ c. cancel an event
 a. The system should support concurrent users without performance degradation  
 b. The system should be cloud based that ensures high availability  
 c. The UI should be simple and user-friendly  
+
+## Run Locally
+
+### Simplest Option
+
+1. Copy the example environment file:
+   `Copy-Item .env.dev.example.ps1 .env.dev.ps1`
+2. Put the real database values into `.env.dev.ps1`
+3. From the project root, run:
+   `.\start-dev.ps1`
+
+This opens:
+- frontend on `http://127.0.0.1:5173`
+- backend on `http://127.0.0.1:8081`
+
+### Requirements
+
+- Java 23
+- Node.js and npm
