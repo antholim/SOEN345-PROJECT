@@ -35,7 +35,14 @@ function App() {
     password: '',
   })
   const [showPassword, setShowPassword] = useState(false)
-  const [currentUser, setCurrentUser] = useState<UserRecord | null>(null)
+  const [currentUser, setCurrentUser] = useState<UserRecord | null>(() => {
+    try {
+      const stored = localStorage.getItem('currentUser')
+      return stored ? (JSON.parse(stored) as UserRecord) : null
+    } catch {
+      return null
+    }
+  })
   const [error, setError] = useState('')
   const [successMessage, setSuccessMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
@@ -61,6 +68,7 @@ function App() {
         return
       }
       const user = (await response.json()) as UserRecord
+      localStorage.setItem('currentUser', JSON.stringify(user))
       setCurrentUser(user)
       setError('')
     } catch {
@@ -89,6 +97,7 @@ function App() {
         return
       }
       const user = (await response.json()) as UserRecord
+      localStorage.setItem('currentUser', JSON.stringify(user))
       setCurrentUser(user)
       setRegistrationForm({ firstName: '', lastName: '', email: '', phoneNumber: '', password: '' })
       setLoginIdentifier(user.email ?? user.phoneNumber ?? '')
@@ -102,6 +111,7 @@ function App() {
   }
 
   const logout = () => {
+    localStorage.removeItem('currentUser')
     setCurrentUser(null)
     setLoginPassword('')
     setShowPassword(false)
