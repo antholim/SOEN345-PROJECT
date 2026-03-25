@@ -1,4 +1,4 @@
-package com.example.backend.auth;
+package com.example.backend.service;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
@@ -22,9 +22,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.example.backend.user.UserEntity;
-import com.example.backend.user.UserRepository;
-import com.example.backend.user.UserRole;
+import com.example.backend.controller.AuthUserResponse;
+import com.example.backend.controller.LoginRequest;
+import com.example.backend.controller.RegistrationRequest;
+import com.example.backend.model.UserEntity;
+import com.example.backend.model.UserRepository;
+import com.example.backend.model.UserRole;
 
 @ExtendWith(MockitoExtension.class)
 class AuthServiceTests {

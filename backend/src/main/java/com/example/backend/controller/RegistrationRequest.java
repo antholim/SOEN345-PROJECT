@@ -1,4 +1,4 @@
-package com.example.backend.auth;
+package com.example.backend.controller;
 
 public record RegistrationRequest(
 	String firstName,

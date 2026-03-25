@@ -1,8 +1,8 @@
-package com.example.backend.auth;
+package com.example.backend.controller;
 
 import java.time.LocalDateTime;
 
-import com.example.backend.user.UserRole;
+import com.example.backend.model.UserRole;
 
 public record AuthUserResponse(
 	Integer userId,

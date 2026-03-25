@@ -1,4 +1,4 @@
-package com.example.backend.auth;
+package com.example.backend.service;
 
 import java.time.LocalDateTime;
 import java.util.Optional;
@@ -8,9 +8,12 @@ import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.web.server.ResponseStatusException;
 
-import com.example.backend.user.UserEntity;
-import com.example.backend.user.UserRepository;
-import com.example.backend.user.UserRole;
+import com.example.backend.controller.AuthUserResponse;
+import com.example.backend.controller.LoginRequest;
+import com.example.backend.controller.RegistrationRequest;
+import com.example.backend.model.UserEntity;
+import com.example.backend.model.UserRepository;
+import com.example.backend.model.UserRole;
 
 @Service
 public class AuthService {

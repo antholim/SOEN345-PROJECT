@@ -1,7 +1,7 @@
 package com.example.backend.config;
 
-import com.example.backend.auth.PasswordHasher;
-import com.example.backend.auth.Pbkdf2PasswordHasher;
+import com.example.backend.service.PasswordHasher;
+import com.example.backend.service.Pbkdf2PasswordHasher;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;

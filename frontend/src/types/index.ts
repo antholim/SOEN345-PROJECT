@@ -5,3 +5,16 @@ export type ApiErrorResponse = {
   detail?: string
   message?: string
 }
+
+export type Event = {
+  eventId: number
+  title: string
+  description: string
+  eventDate: string
+  availableTickets: number
+  price: number
+  status: string
+  venueName: string
+  venueCity: string
+  categoryName: string
+}

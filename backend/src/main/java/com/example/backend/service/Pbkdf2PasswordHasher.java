@@ -1,4 +1,4 @@
-package com.example.backend.auth;
+package com.example.backend.service;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;

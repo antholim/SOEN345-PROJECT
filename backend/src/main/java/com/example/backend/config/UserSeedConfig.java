@@ -10,7 +10,7 @@ import java.util.Locale;
 
 import javax.sql.DataSource;
 
-import com.example.backend.auth.PasswordHasher;
+import com.example.backend.service.PasswordHasher;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -18,7 +18,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.example.backend.user.UserRole;
+import com.example.backend.model.UserRole;
 
 @Configuration
 public class UserSeedConfig {

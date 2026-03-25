@@ -1,4 +1,4 @@
-package com.example.backend.user;
+package com.example.backend.model;
 
 import java.util.Optional;
 
