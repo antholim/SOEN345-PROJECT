@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useState, useRef, useEffect } from 'react'
 import './App.css'
 
 type UserRole = 'CUSTOMER' | 'ADMIN'
@@ -40,6 +40,7 @@ function App() {
   const [successMessage, setSuccessMessage] = useState('')
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [activeTab, setActiveTab] = useState<ActiveTab>('events')
+  const [showProfile, setShowProfile] = useState(false)
 
   const handleLoginSubmit = async (event: { preventDefault(): void }) => {
     event.preventDefault()
@@ -106,12 +107,29 @@ function App() {
     setShowPassword(false)
     setError('')
     setActiveTab('events')
+    setShowProfile(false)
   }
+
+  const profileRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (profileRef.current && !profileRef.current.contains(e.target as Node)) {
+        setShowProfile(false)
+      }
+    }
+    document.addEventListener('mousedown', handleClickOutside)
+    return () => document.removeEventListener('mousedown', handleClickOutside)
+  }, [])
 
   if (currentUser) {
     const initials =
       (currentUser.firstName[0] ?? '').toUpperCase() +
       (currentUser.lastName[0] ?? '').toUpperCase()
+
+    const joinDate = new Date(currentUser.createdAt).toLocaleDateString('en-CA', {
+      year: 'numeric', month: 'long', day: 'numeric',
+    })
 
     return (
       <div className="app-shell">
@@ -136,14 +154,53 @@ function App() {
               </button>
             </nav>
 
-            <div className="header-profile">
-              <div className="profile-avatar" aria-hidden="true">{initials}</div>
-              <span className="profile-name">
-                {currentUser.firstName} {currentUser.lastName}
-              </span>
-              <button type="button" className="signout-btn" onClick={logout}>
-                Sign out
+            <div className="header-profile" ref={profileRef}>
+              <button
+                type="button"
+                className="profile-toggle"
+                onClick={() => setShowProfile((v) => !v)}
+                aria-expanded={showProfile}
+                aria-haspopup="true"
+              >
+                <div className="profile-avatar">{initials}</div>
+                <span className="profile-name">
+                  {currentUser.firstName} {currentUser.lastName}
+                </span>
+                <svg className={`profile-chevron${showProfile ? ' open' : ''}`} width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
+                  <polyline points="6 9 12 15 18 9" />
+                </svg>
               </button>
+
+              {showProfile && (
+                <div className="profile-dropdown">
+                  <div className="profile-dropdown-header">
+                    <div className="profile-dropdown-avatar">{initials}</div>
+                    <div>
+                      <p className="profile-dropdown-name">{currentUser.firstName} {currentUser.lastName}</p>
+                      <span className={`profile-dropdown-role ${currentUser.role}`}>{currentUser.role}</span>
+                    </div>
+                  </div>
+
+                  <dl className="profile-dropdown-details">
+                    <div>
+                      <dt>Email</dt>
+                      <dd>{currentUser.email ?? '—'}</dd>
+                    </div>
+                    <div>
+                      <dt>Phone</dt>
+                      <dd>{currentUser.phoneNumber ?? '—'}</dd>
+                    </div>
+                    <div>
+                      <dt>Member since</dt>
+                      <dd>{joinDate}</dd>
+                    </div>
+                  </dl>
+
+                  <button type="button" className="profile-dropdown-signout" onClick={logout}>
+                    Sign out
+                  </button>
+                </div>
+              )}
             </div>
           </div>
 
