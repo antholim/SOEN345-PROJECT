@@ -457,10 +457,69 @@
 
 .event-actions {
   display: flex;
+  align-items: center;
+  gap: 20px;
+  flex-shrink: 0;
+}
+
+.event-price-col {
+  display: flex;
   flex-direction: column;
   align-items: flex-end;
   gap: 4px;
-  flex-shrink: 0;
+}
+
+.event-reserve-col {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.event-qty-input {
+  width: 56px;
+  padding: 6px 8px;
+  border: 1.5px solid rgba(13, 49, 66, 0.2);
+  border-radius: 6px;
+  font: inherit;
+  font-size: 0.9rem;
+  text-align: center;
+  color: var(--text-strong);
+  outline: none;
+  transition: border-color 0.15s ease;
+}
+
+.event-qty-input:focus {
+  border-color: #0f6f8c;
+}
+
+.event-qty-input:disabled {
+  opacity: 0.4;
+}
+
+.event-reserve-btn {
+  background: linear-gradient(135deg, #0f6f8c, #124e69);
+  color: #fff;
+  border: none;
+  font: inherit;
+  font-size: 0.88rem;
+  font-weight: 700;
+  padding: 7px 18px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: opacity 0.15s ease;
+}
+
+.event-reserve-btn:hover:not(:disabled) {
+  opacity: 0.85;
+}
+
+.event-reserve-btn:disabled {
+  cursor: default;
+}
+
+.event-reserve-btn--done {
+  background: linear-gradient(135deg, #1f8c5d, #166644);
 }
 
 .event-price {
@@ -475,6 +534,37 @@
   font-size: 0.8rem;
   color: var(--text-soft);
   margin: 0;
+}
+
+/* ── Load more ── */
+
+.load-more-wrap {
+  display: flex;
+  justify-content: center;
+  margin-top: 24px;
+}
+
+.load-more-btn {
+  background: none;
+  border: 2px solid #0f6f8c;
+  color: #0f6f8c;
+  font: inherit;
+  font-size: 0.95rem;
+  font-weight: 700;
+  padding: 10px 36px;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.load-more-btn:hover:not(:disabled) {
+  background: #0f6f8c;
+  color: #fff;
+}
+
+.load-more-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
 
 /* ── Event list states ── */

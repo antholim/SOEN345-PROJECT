@@ -6,6 +6,11 @@ export type ApiErrorResponse = {
   message?: string
 }
 
+export type PagedEventResponse = {
+  events: Event[]
+  hasMore: boolean
+}
+
 export type Event = {
   eventId: number
   title: string

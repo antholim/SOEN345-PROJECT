@@ -1,5 +1,7 @@
 import { useEffect, useState } from 'react'
 import { getActiveEvents } from '../../services/eventService'
+import { createReservation } from '../../services/reservationService'
+import { useUser } from '../../contexts/UserContext'
 import type { Event } from '../../types'
 
 const MONTH_ABBR = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
@@ -19,16 +21,56 @@ function formatDay(dateStr: string): string {
 }
 
 export function EventList() {
+  const { currentUser } = useUser()
   const [events, setEvents] = useState<Event[]>([])
   const [loading, setLoading] = useState(true)
+  const [loadingMore, setLoadingMore] = useState(false)
   const [error, setError] = useState<string | null>(null)
+  const [page, setPage] = useState(0)
+  const [hasMore, setHasMore] = useState(false)
+  const [quantities, setQuantities] = useState<Record<number, number>>({})
+  const [reserving, setReserving] = useState<Record<number, boolean>>({})
+  const [reserved, setReserved] = useState<Record<number, boolean>>({})
 
   useEffect(() => {
-    getActiveEvents()
-      .then(setEvents)
+    getActiveEvents(0)
+      .then(({ events, hasMore }) => {
+        setEvents(events)
+        setHasMore(hasMore)
+      })
       .catch((err: Error) => setError(err.message))
       .finally(() => setLoading(false))
   }, [])
+
+  function reserve(eventId: number) {
+    if (!currentUser) return
+    const qty = quantities[eventId] ?? 1
+    setReserving(prev => ({ ...prev, [eventId]: true }))
+    createReservation(currentUser.userId, eventId, qty)
+      .then(() => {
+        setReserved(prev => ({ ...prev, [eventId]: true }))
+        setEvents(prev => prev.map(e =>
+          e.eventId === eventId
+            ? { ...e, availableTickets: e.availableTickets - qty }
+            : e
+        ))
+      })
+      .catch((err: Error) => setError(err.message))
+      .finally(() => setReserving(prev => ({ ...prev, [eventId]: false })))
+  }
+
+  function loadMore() {
+    const nextPage = page + 1
+    setLoadingMore(true)
+    getActiveEvents(nextPage)
+      .then(({ events: newEvents, hasMore }) => {
+        setEvents(prev => [...prev, ...newEvents])
+        setHasMore(hasMore)
+        setPage(nextPage)
+      })
+      .catch((err: Error) => setError(err.message))
+      .finally(() => setLoadingMore(false))
+  }
 
   if (loading) {
     return (
@@ -56,37 +98,67 @@ export function EventList() {
   }
 
   return (
-    <div className="event-list">
-      {events.map((event) => {
-        const date = new Date(event.eventDate)
-        const month = MONTH_ABBR[date.getMonth()]
-        const day = date.getDate()
+    <>
+      <div className="event-list">
+        {events.map((event) => {
+          const date = new Date(event.eventDate)
+          const month = MONTH_ABBR[date.getMonth()]
+          const day = date.getDate()
 
-        return (
-          <div key={event.eventId} className="event-row">
-            <div className="event-date-box">
-              <span className="event-date-month">{month}</span>
-              <span className="event-date-day">{day}</span>
-            </div>
+          return (
+            <div key={event.eventId} className="event-row">
+              <div className="event-date-box">
+                <span className="event-date-month">{month}</span>
+                <span className="event-date-day">{day}</span>
+              </div>
 
-            <div className="event-info">
-              <p className="event-time">
-                {formatDay(event.eventDate)} • {formatTime(event.eventDate)}
-              </p>
-              <h3 className="event-title">{event.title}</h3>
-              <p className="event-venue">
-                {event.venueCity} • {event.venueName}
-              </p>
-              <span className="event-category">{event.categoryName}</span>
-            </div>
+              <div className="event-info">
+                <p className="event-time">
+                  {formatDay(event.eventDate)} • {formatTime(event.eventDate)}
+                </p>
+                <h3 className="event-title">{event.title}</h3>
+                <p className="event-venue">
+                  {event.venueCity} • {event.venueName}
+                </p>
+                <span className="event-category">{event.categoryName}</span>
+              </div>
 
-            <div className="event-actions">
-              <p className="event-price">${event.price.toFixed(2)}</p>
-              <p className="event-tickets">{event.availableTickets.toLocaleString()} tickets left</p>
+              <div className="event-actions">
+                <div className="event-price-col">
+                  <p className="event-price">${event.price.toFixed(2)}</p>
+                  <p className="event-tickets">{event.availableTickets.toLocaleString()} tickets left</p>
+                </div>
+                <div className="event-reserve-col">
+                  <input
+                    className="event-qty-input"
+                    type="number"
+                    min={1}
+                    max={event.availableTickets}
+                    value={quantities[event.eventId] ?? 1}
+                    onChange={e => setQuantities(prev => ({ ...prev, [event.eventId]: Math.max(1, Number(e.target.value)) }))}
+                    disabled={reserved[event.eventId]}
+                  />
+                  <button
+                    className={`event-reserve-btn${reserved[event.eventId] ? ' event-reserve-btn--done' : ''}`}
+                    onClick={() => reserve(event.eventId)}
+                    disabled={reserving[event.eventId] || reserved[event.eventId]}
+                  >
+                    {reserved[event.eventId] ? 'Reserved!' : reserving[event.eventId] ? '…' : 'Reserve'}
+                  </button>
+                </div>
+              </div>
             </div>
-          </div>
-        )
-      })}
-    </div>
+          )
+        })}
+      </div>
+
+      {hasMore && (
+        <div className="load-more-wrap">
+          <button className="load-more-btn" onClick={loadMore} disabled={loadingMore}>
+            {loadingMore ? 'Loading…' : 'Load more'}
+          </button>
+        </div>
+      )}
+    </>
   )
 }
