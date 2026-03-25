@@ -2,6 +2,9 @@ package com.example.backend.user;
 
 import java.time.LocalDateTime;
 
+import org.hibernate.annotations.JdbcTypeCode;
+import org.hibernate.type.SqlTypes;
+
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.EnumType;
@@ -36,7 +39,8 @@ public class UserEntity {
 	private String passwordHash;
 
 	@Enumerated(EnumType.STRING)
-	@Column(nullable = false, length = 20)
+	@JdbcTypeCode(SqlTypes.NAMED_ENUM)
+	@Column(nullable = false)
 	private UserRole role;
 
 	@Column(name = "created_at", nullable = false)
