@@ -1,0 +1,100 @@
+:root {
+  --bg-top: #f6efe1;
+  --bg-bottom: #dff1f0;
+  --surface: rgba(255, 252, 246, 0.8);
+  --text-strong: #173447;
+  --text-soft: #58707d;
+  --accent-strong: #0f6f8c;
+  --font-display: "Avenir Next", "Segoe UI", "Trebuchet MS", sans-serif;
+  --font-body: "Inter", "Segoe UI", "Trebuchet MS", sans-serif;
+  --font-mono: "Consolas", "Courier New", monospace;
+
+  font-family: var(--font-body);
+  line-height: 1.5;
+  font-weight: 400;
+  color: var(--text-strong);
+  background:
+    radial-gradient(circle at top left, rgba(255, 210, 140, 0.6), transparent 32%),
+    radial-gradient(circle at top right, rgba(114, 193, 199, 0.4), transparent 30%),
+    linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  margin: 0;
+  min-width: 320px;
+  min-height: 100vh;
+  background:
+    radial-gradient(circle at 15% 20%, rgba(255, 223, 165, 0.42), transparent 0 24%),
+    radial-gradient(circle at 85% 10%, rgba(69, 149, 170, 0.2), transparent 0 22%),
+    linear-gradient(180deg, var(--bg-top), var(--bg-bottom));
+}
+
+body::before {
+  content: '';
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+  background-image:
+    linear-gradient(rgba(23, 52, 71, 0.025) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(23, 52, 71, 0.025) 1px, transparent 1px);
+  background-size: 40px 40px;
+  mask-image: linear-gradient(180deg, rgba(0, 0, 0, 0.6), transparent 85%);
+}
+
+button,
+input {
+  font: inherit;
+}
+
+#root {
+  min-height: 100vh;
+}
+
+h1,
+h2,
+h3,
+p {
+  margin: 0;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-display);
+  letter-spacing: -0.04em;
+  color: var(--text-strong);
+}
+
+h1 {
+  font-size: clamp(2.8rem, 5vw, 4.7rem);
+  line-height: 0.95;
+}
+
+h2 {
+  font-size: clamp(2rem, 3.8vw, 3rem);
+  line-height: 1;
+}
+
+h3 {
+  font-size: 1.5rem;
+}
+
+strong {
+  font-size: 1rem;
+}
+
+::selection {
+  background: rgba(15, 111, 140, 0.2);
+}

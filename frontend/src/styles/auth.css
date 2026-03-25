@@ -1,0 +1,221 @@
+.login-shell {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+  min-height: 100vh;
+  padding: 32px 0;
+  display: grid;
+  place-items: center;
+}
+
+.login-card {
+  width: min(520px, 100%);
+  border-radius: 32px;
+  padding: 36px;
+  display: flex;
+  flex-direction: column;
+  gap: 20px;
+  border: 1px solid rgba(13, 49, 66, 0.12);
+  background: rgba(255, 252, 246, 0.82);
+  box-shadow: 0 28px 60px rgba(21, 54, 67, 0.12);
+  backdrop-filter: blur(18px);
+  animation: rise-in 0.55s ease both;
+}
+
+.tm-logo-login {
+  margin: 0 0 4px;
+  font-size: 1.4rem;
+  font-weight: 800;
+  font-style: italic;
+  letter-spacing: -0.02em;
+  color: var(--accent-strong);
+}
+
+.card-heading {
+  display: grid;
+  gap: 8px;
+}
+
+.support-text {
+  color: var(--text-soft);
+}
+
+.auth-tabs {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.auth-tab {
+  border: 1px solid rgba(13, 49, 66, 0.12);
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.72);
+  color: var(--text-strong);
+  padding: 12px 16px;
+  font: inherit;
+  font-weight: 700;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    border-color 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.auth-tab.active {
+  background: rgba(15, 111, 140, 0.12);
+  border-color: rgba(15, 111, 140, 0.3);
+  color: var(--accent-strong);
+}
+
+.auth-tab:hover,
+.auth-tab:focus-visible {
+  transform: translateY(-1px);
+}
+
+.login-form {
+  display: grid;
+  gap: 16px;
+}
+
+.field {
+  display: grid;
+  gap: 8px;
+  color: var(--text-strong);
+  font-weight: 600;
+}
+
+.field input {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid rgba(13, 49, 66, 0.16);
+  border-radius: 18px;
+  padding: 14px 16px;
+  background: rgba(255, 255, 255, 0.92);
+  color: var(--text-strong);
+  font: inherit;
+  transition:
+    border-color 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.field input:focus {
+  outline: none;
+  border-color: rgba(15, 111, 140, 0.64);
+  box-shadow: 0 0 0 4px rgba(15, 111, 140, 0.12);
+  background: #fff;
+}
+
+.password-row {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 10px;
+  align-items: center;
+}
+
+.split-fields {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+}
+
+.helper-text {
+  margin: -6px 2px 0;
+  font-size: 0.92rem;
+  color: var(--text-soft);
+}
+
+.primary-button,
+.secondary-button,
+.ghost-button {
+  border: 0;
+  font: inherit;
+  cursor: pointer;
+  transition:
+    transform 0.2s ease,
+    box-shadow 0.2s ease,
+    background-color 0.2s ease;
+}
+
+.primary-button,
+.secondary-button {
+  border-radius: 999px;
+  padding: 14px 18px;
+  font-weight: 700;
+}
+
+.primary-button {
+  background: linear-gradient(135deg, #0f6f8c, #124e69);
+  color: #fdfdf8;
+  box-shadow: 0 18px 28px rgba(18, 78, 105, 0.22);
+}
+
+.secondary-button {
+  background: rgba(15, 111, 140, 0.12);
+  color: var(--accent-strong);
+}
+
+.ghost-button {
+  border-radius: 14px;
+  padding: 12px 14px;
+  background: rgba(15, 111, 140, 0.1);
+  color: var(--accent-strong);
+  font-weight: 700;
+}
+
+.primary-button:hover,
+.secondary-button:hover,
+.ghost-button:hover,
+.primary-button:focus-visible,
+.secondary-button:focus-visible,
+.ghost-button:focus-visible {
+  transform: translateY(-1px);
+}
+
+.primary-button:disabled {
+  opacity: 0.7;
+  cursor: wait;
+  transform: none;
+}
+
+.message {
+  border-radius: 18px;
+  padding: 14px 16px;
+}
+
+.info-message {
+  background: rgba(15, 111, 140, 0.08);
+  color: var(--accent-strong);
+}
+
+.error-message {
+  background: rgba(177, 55, 22, 0.12);
+  color: #8b2f16;
+}
+
+@keyframes rise-in {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+@media (max-width: 720px) {
+  .login-shell {
+    width: min(100%, calc(100% - 18px));
+    padding: 18px 0;
+  }
+
+  .login-card {
+    padding: 22px;
+    border-radius: 24px;
+  }
+
+  .password-row,
+  .split-fields {
+    grid-template-columns: 1fr;
+  }
+}
