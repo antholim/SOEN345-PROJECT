@@ -50,7 +50,7 @@ export function DashboardScreen() {
               </div>
             )}
 
-            <EventList filter={appliedFilter} />
+            <EventList filter={appliedFilter} isAdmin={isAdmin} />
           </div>
         )}
         {activeTab === 'my-events' && (

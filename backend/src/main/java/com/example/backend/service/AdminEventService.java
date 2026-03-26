@@ -36,6 +36,17 @@ public class AdminEventService {
 	}
 
 	@Transactional
+	public void cancelEvent(int eventId) {
+		EventEntity event = eventRepository.findById(eventId)
+			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Event not found: " + eventId));
+		if (event.getStatus() == EventStatus.CANCELLED) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Event is already cancelled");
+		}
+		event.setStatus(EventStatus.CANCELLED);
+		eventRepository.save(event);
+	}
+
+	@Transactional
 	public EventResponse createEvent(CreateEventRequest req) {
 		VenueEntity venue = venueRepository.findByVenueNameAndCity(req.venueName(), req.venueCity())
 			.orElseGet(() -> {

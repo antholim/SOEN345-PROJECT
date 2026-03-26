@@ -100,7 +100,8 @@ public class ReservationService {
 					category.getCategoryName(),
 					r.getNumberOfTickets(),
 					r.getTotalPrice(),
-					r.getStatus().name()
+					r.getStatus().name(),
+					event.getStatus().name()
 				);
 			})
 			.toList();

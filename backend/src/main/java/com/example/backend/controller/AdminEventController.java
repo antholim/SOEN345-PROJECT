@@ -1,6 +1,8 @@
 package com.example.backend.controller;
 
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -23,5 +25,11 @@ public class AdminEventController {
 	@ResponseStatus(HttpStatus.CREATED)
 	public EventResponse createEvent(@RequestBody CreateEventRequest request) {
 		return adminEventService.createEvent(request);
+	}
+
+	@PatchMapping("/{id}/cancel")
+	@ResponseStatus(HttpStatus.NO_CONTENT)
+	public void cancelEvent(@PathVariable int id) {
+		adminEventService.cancelEvent(id);
 	}
 }

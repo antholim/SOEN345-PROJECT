@@ -522,6 +522,93 @@
   background: linear-gradient(135deg, #1f8c5d, #166644);
 }
 
+.kebab-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
+.kebab-btn {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: 32px;
+  height: 32px;
+  background: none;
+  border: none;
+  border-radius: 6px;
+  cursor: pointer;
+  padding: 0;
+  transition: background 0.15s ease;
+}
+
+.kebab-btn span {
+  display: block;
+  width: 4px;
+  height: 4px;
+  border-radius: 50%;
+  background: var(--text-soft);
+  transition: background 0.15s ease;
+}
+
+.kebab-btn:hover {
+  background: rgba(13, 49, 66, 0.07);
+}
+
+.kebab-btn:hover span {
+  background: var(--text-strong);
+}
+
+.kebab-menu {
+  position: absolute;
+  top: calc(100% + 4px);
+  left: 0;
+  background: #fff;
+  border-radius: 8px;
+  box-shadow: 0 6px 24px rgba(13, 49, 66, 0.15);
+  border: 1px solid rgba(13, 49, 66, 0.08);
+  overflow: hidden;
+  z-index: 200;
+  min-width: 110px;
+  animation: dropdown-in 0.15s ease both;
+}
+
+.kebab-item {
+  display: block;
+  width: 100%;
+  padding: 10px 16px;
+  background: none;
+  border: none;
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 600;
+  text-align: left;
+  cursor: pointer;
+  transition: background 0.12s ease;
+}
+
+.kebab-item--edit {
+  color: var(--text-strong);
+}
+
+.kebab-item--edit:hover {
+  background: rgba(13, 49, 66, 0.05);
+}
+
+.kebab-item--cancel {
+  color: #b13716;
+}
+
+.kebab-item--cancel:hover:not(:disabled) {
+  background: rgba(177, 55, 22, 0.06);
+}
+
+.kebab-item--cancel:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 .event-price {
   font-size: 1.25rem;
   font-weight: 800;

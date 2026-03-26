@@ -15,6 +15,16 @@ export type CreateEventForm = {
   createdBy: number
 }
 
+export async function cancelAdminEvent(eventId: number): Promise<void> {
+  const response = await fetch(getApiUrl(`/api/admin/events/${eventId}/cancel`), {
+    method: 'PATCH',
+  })
+  if (!response.ok) {
+    const err = (await response.json().catch(() => ({}))) as ApiErrorResponse
+    throw new Error(err.detail ?? err.message ?? `Error ${response.status}`)
+  }
+}
+
 export async function createEvent(form: CreateEventForm): Promise<Event> {
   const response = await fetch(getApiUrl('/api/admin/events'), {
     method: 'POST',

@@ -27,6 +27,7 @@ export type Reservation = {
   numberOfTickets: number
   totalPrice: number
   status: string
+  eventStatus: string
 }
 
 export type Event = {

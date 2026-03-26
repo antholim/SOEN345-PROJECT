@@ -101,10 +101,13 @@ export function MyEventsList() {
                   {r.numberOfTickets} ticket{r.numberOfTickets !== 1 ? 's' : ''}
                 </p>
               </div>
-              {r.status === 'CANCELLED' && (
-                <span className="my-events-status my-events-status--cancelled">CANCELLED</span>
+              {r.eventStatus === 'CANCELLED' && (
+                <span className="my-events-status my-events-status--cancelled">Event Cancelled</span>
               )}
-              {r.status !== 'CANCELLED' && (
+              {r.eventStatus !== 'CANCELLED' && r.status === 'CANCELLED' && (
+                <span className="my-events-status my-events-status--cancelled">Reservation Cancelled</span>
+              )}
+              {r.eventStatus !== 'CANCELLED' && r.status !== 'CANCELLED' && (
                 <button
                   className="reservation-delete-btn"
                   onClick={() => handleCancel(r.reservationId)}

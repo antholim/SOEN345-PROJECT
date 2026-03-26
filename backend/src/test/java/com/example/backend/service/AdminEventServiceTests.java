@@ -221,6 +221,53 @@ class AdminEventServiceTests {
 		assertEquals(EventStatus.ACTIVE, eventCaptor.getValue().getStatus());
 	}
 
+	// ── cancelEvent ───────────────────────────────────────────────────────────
+
+	@Test
+	void cancelEventSetsStatusToCancelled() {
+		EventEntity event = new EventEntity();
+		event.setEventId(1);
+		event.setStatus(EventStatus.ACTIVE);
+
+		when(eventRepository.findById(1)).thenReturn(Optional.of(event));
+		when(eventRepository.save(any(EventEntity.class))).thenAnswer(inv -> inv.getArgument(0));
+
+		adminEventService.cancelEvent(1);
+
+		verify(eventRepository).save(eventCaptor.capture());
+		assertEquals(EventStatus.CANCELLED, eventCaptor.getValue().getStatus());
+	}
+
+	@Test
+	void cancelEventThrowsNotFoundWhenEventMissing() {
+		when(eventRepository.findById(99)).thenReturn(Optional.empty());
+
+		ResponseStatusException ex = assertThrows(
+			ResponseStatusException.class,
+			() -> adminEventService.cancelEvent(99)
+		);
+
+		assertEquals(HttpStatus.NOT_FOUND, ex.getStatusCode());
+		verify(eventRepository, never()).save(any());
+	}
+
+	@Test
+	void cancelEventThrowsConflictWhenAlreadyCancelled() {
+		EventEntity event = new EventEntity();
+		event.setEventId(1);
+		event.setStatus(EventStatus.CANCELLED);
+
+		when(eventRepository.findById(1)).thenReturn(Optional.of(event));
+
+		ResponseStatusException ex = assertThrows(
+			ResponseStatusException.class,
+			() -> adminEventService.cancelEvent(1)
+		);
+
+		assertEquals(HttpStatus.CONFLICT, ex.getStatusCode());
+		verify(eventRepository, never()).save(any());
+	}
+
 	@Test
 	void createEventSetsCreatedAtTimestamp() {
 		CreateEventRequest req = makeRequest();
