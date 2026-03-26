@@ -18,7 +18,13 @@ public class EventController {
 	}
 
 	@GetMapping
-	public PagedEventResponse getActiveEvents(@RequestParam(defaultValue = "0") int page) {
-		return eventService.getActiveEvents(page);
+	public PagedEventResponse getActiveEvents(
+		@RequestParam(defaultValue = "0") int page,
+		@RequestParam(required = false) String keyword,
+		@RequestParam(required = false) String city,
+		@RequestParam(required = false) String category,
+		@RequestParam(required = false) String fromDate
+	) {
+		return eventService.getActiveEvents(page, keyword, city, category, fromDate);
 	}
 }

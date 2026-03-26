@@ -1,15 +1,32 @@
-export function SearchBar() {
+import type { EventFilter } from '../../types'
+
+const CATEGORIES = ['Concert', 'Sports', 'Arts & Theatre', 'Comedy', 'Family', 'Travel']
+
+type SearchBarProps = {
+  filter: EventFilter
+  onChange: (filter: EventFilter) => void
+  onSearch: () => void
+}
+
+export function SearchBar({ filter, onChange, onSearch }: SearchBarProps) {
   return (
     <div className="header-search">
       <div className="search-bar">
-        <div className="search-segment">
+
+        <div className="search-segment search-segment--grow">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
             <path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z" />
             <circle cx="12" cy="10" r="3" />
           </svg>
           <div className="search-segment-inner">
             <span className="search-label">LOCATION</span>
-            <input type="text" className="search-input" placeholder="City or Postal Code" />
+            <input
+              type="text"
+              className="search-input"
+              placeholder="City"
+              value={filter.city}
+              onChange={e => onChange({ ...filter, city: e.target.value })}
+            />
           </div>
         </div>
 
@@ -23,30 +40,38 @@ export function SearchBar() {
             <line x1="3" y1="10" x2="21" y2="10" />
           </svg>
           <div className="search-segment-inner">
-            <span className="search-label">DATES</span>
-            <div className="dates-row">
-              <span>All Dates</span>
-              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-                <polyline points="6 9 12 15 18 9" />
-              </svg>
-            </div>
+            <span className="search-label">FROM DATE</span>
+            <input
+              type="date"
+              className="search-input search-input--date"
+              value={filter.fromDate}
+              onChange={e => onChange({ ...filter, fromDate: e.target.value })}
+            />
           </div>
         </div>
 
         <div className="search-divider" />
 
-        <div className="search-segment search-segment--grow">
+        <div className="search-segment">
           <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" aria-hidden="true">
-            <circle cx="11" cy="11" r="8" />
-            <line x1="21" y1="21" x2="16.65" y2="16.65" />
+            <path d="M4 6h16M7 12h10M10 18h4" strokeLinecap="round" />
           </svg>
           <div className="search-segment-inner">
-            <span className="search-label">SEARCH</span>
-            <input type="text" className="search-input" placeholder="Artist, Event or Venue" />
+            <span className="search-label">CATEGORY</span>
+            <select
+              className="search-input search-input--select"
+              value={filter.category}
+              onChange={e => onChange({ ...filter, category: e.target.value })}
+            >
+              <option value="">All Categories</option>
+              {CATEGORIES.map(c => (
+                <option key={c} value={c}>{c}</option>
+              ))}
+            </select>
           </div>
         </div>
 
-        <button type="button" className="search-button">Search</button>
+        <button type="button" className="search-button" onClick={onSearch}>Search</button>
       </div>
     </div>
   )

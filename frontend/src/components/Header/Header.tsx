@@ -3,14 +3,17 @@ import { useUser } from '../../contexts/UserContext'
 import { useClickOutside } from '../../hooks/useClickOutside'
 import { SearchBar } from '../SearchBar/SearchBar'
 import { ProfileDropdown } from '../ProfileDropdown/ProfileDropdown'
-import type { ActiveTab } from '../../types'
+import type { ActiveTab, EventFilter } from '../../types'
 
 type HeaderProps = {
   activeTab: ActiveTab
   onTabChange: (tab: ActiveTab) => void
+  filter: EventFilter
+  onFilterChange: (filter: EventFilter) => void
+  onSearch: () => void
 }
 
-export function Header({ activeTab, onTabChange }: HeaderProps) {
+export function Header({ activeTab, onTabChange, filter, onFilterChange, onSearch }: HeaderProps) {
   const { currentUser } = useUser()
   const [showProfile, setShowProfile] = useState(false)
   const profileRef = useRef<HTMLDivElement>(null)
@@ -72,7 +75,9 @@ export function Header({ activeTab, onTabChange }: HeaderProps) {
         </div>
       </div>
 
-      {activeTab === 'events' && <SearchBar />}
+      {activeTab === 'events' && (
+        <SearchBar filter={filter} onChange={onFilterChange} onSearch={onSearch} />
+      )}
     </header>
   )
 }

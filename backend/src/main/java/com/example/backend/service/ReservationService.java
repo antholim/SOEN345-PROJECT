@@ -2,6 +2,7 @@ package com.example.backend.service;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
+import java.util.List;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
@@ -10,6 +11,7 @@ import org.springframework.web.server.ResponseStatusException;
 
 import com.example.backend.controller.ReservationRequest;
 import com.example.backend.controller.ReservationResponse;
+import com.example.backend.controller.UserReservationResponse;
 import com.example.backend.model.EventRepository;
 import com.example.backend.model.ReservationEntity;
 import com.example.backend.model.ReservationRepository;
@@ -63,5 +65,44 @@ public class ReservationService {
 			saved.getTotalPrice(),
 			saved.getStatus().name()
 		);
+	}
+
+	@Transactional
+	public void cancelReservation(Integer reservationId) {
+		var reservation = reservationRepository.findById(reservationId)
+			.orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Reservation not found"));
+
+		if (reservation.getStatus() == ReservationStatus.CANCELLED) {
+			throw new ResponseStatusException(HttpStatus.CONFLICT, "Reservation is already cancelled");
+		}
+
+		var event = reservation.getEvent();
+		event.setAvailableTickets(event.getAvailableTickets() + reservation.getNumberOfTickets());
+		eventRepository.save(event);
+
+		reservation.setStatus(ReservationStatus.CANCELLED);
+		reservationRepository.save(reservation);
+	}
+
+	@Transactional(readOnly = true)
+	public List<UserReservationResponse> getReservationsForUser(Integer userId) {
+		return reservationRepository.findAllByUser_UserId(userId).stream()
+			.map(r -> {
+				var event = r.getEvent();
+				var venue = event.getVenue();
+				var category = event.getCategory();
+				return new UserReservationResponse(
+					r.getReservationId(),
+					event.getTitle(),
+					event.getEventDate().toString(),
+					venue.getCity(),
+					venue.getVenueName(),
+					category.getCategoryName(),
+					r.getNumberOfTickets(),
+					r.getTotalPrice(),
+					r.getStatus().name()
+				);
+			})
+			.toList();
 	}
 }

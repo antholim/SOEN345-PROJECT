@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react'
 import { getActiveEvents } from '../../services/eventService'
 import { createReservation } from '../../services/reservationService'
 import { useUser } from '../../contexts/UserContext'
-import type { Event } from '../../types'
+import type { Event, EventFilter } from '../../types'
 
 const MONTH_ABBR = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 
@@ -20,10 +20,10 @@ function formatDay(dateStr: string): string {
   return days[new Date(dateStr).getDay()]
 }
 
-export function EventList() {
+export function EventList({ filter }: { filter: EventFilter }) {
   const { currentUser } = useUser()
   const [events, setEvents] = useState<Event[]>([])
-  const [loading, setLoading] = useState(true)
+  const [loadedFilter, setLoadedFilter] = useState<EventFilter | null>(null)
   const [loadingMore, setLoadingMore] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [page, setPage] = useState(0)
@@ -32,15 +32,22 @@ export function EventList() {
   const [reserving, setReserving] = useState<Record<number, boolean>>({})
   const [reserved, setReserved] = useState<Record<number, boolean>>({})
 
+  const loading = loadedFilter !== filter
+
   useEffect(() => {
-    getActiveEvents(0)
+    getActiveEvents(0, filter)
       .then(({ events, hasMore }) => {
         setEvents(events)
         setHasMore(hasMore)
+        setPage(0)
+        setError(null)
+        setLoadedFilter(filter)
       })
-      .catch((err: Error) => setError(err.message))
-      .finally(() => setLoading(false))
-  }, [])
+      .catch((err: Error) => {
+        setError(err.message)
+        setLoadedFilter(filter)
+      })
+  }, [filter])
 
   function reserve(eventId: number) {
     if (!currentUser) return
@@ -62,7 +69,7 @@ export function EventList() {
   function loadMore() {
     const nextPage = page + 1
     setLoadingMore(true)
-    getActiveEvents(nextPage)
+    getActiveEvents(nextPage, filter)
       .then(({ events: newEvents, hasMore }) => {
         setEvents(prev => [...prev, ...newEvents])
         setHasMore(hasMore)
