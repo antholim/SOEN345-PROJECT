@@ -17,6 +17,18 @@ export type PagedEventResponse = {
   hasMore: boolean
 }
 
+export type Reservation = {
+  reservationId: number
+  eventTitle: string
+  eventDate: string
+  venueCity: string
+  venueName: string
+  categoryName: string
+  numberOfTickets: number
+  totalPrice: number
+  status: string
+}
+
 export type Event = {
   eventId: number
   title: string

@@ -597,6 +597,53 @@
   to { transform: rotate(360deg); }
 }
 
+/* ── My Events status badge ── */
+
+.my-events-status {
+  display: inline-block;
+  padding: 4px 12px;
+  border-radius: 999px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  white-space: nowrap;
+}
+
+.my-events-status--confirmed {
+  background: rgba(31, 140, 93, 0.12);
+  color: #1a7a50;
+}
+
+.my-events-status--cancelled {
+  background: rgba(177, 55, 22, 0.1);
+  color: #8b2f16;
+}
+
+.reservation-delete-btn {
+  background: none;
+  border: 1.5px solid #b13716;
+  color: #b13716;
+  font: inherit;
+  font-size: 0.85rem;
+  font-weight: 700;
+  padding: 6px 16px;
+  border-radius: 6px;
+  cursor: pointer;
+  white-space: nowrap;
+  transition: background 0.15s ease, color 0.15s ease;
+}
+
+.reservation-delete-btn:hover:not(:disabled) {
+  background: #b13716;
+  color: #fff;
+}
+
+.reservation-delete-btn:disabled {
+  opacity: 0.5;
+  cursor: default;
+}
+
 /* ── Responsive ── */
 
 @media (max-width: 720px) {

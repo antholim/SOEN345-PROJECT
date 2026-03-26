@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { Header } from '../../components/Header/Header'
 import { EventList } from '../../components/EventList/EventList'
+import { MyEventsList } from '../../components/MyEventsList/MyEventsList'
 import type { ActiveTab, EventFilter } from '../../types'
 
 const EMPTY_FILTER: EventFilter = { city: '', category: '', fromDate: '' }
@@ -30,7 +31,11 @@ export function DashboardScreen() {
             <EventList filter={appliedFilter} />
           </div>
         )}
-        {activeTab === 'my-events' && <div className="tab-panel" />}
+        {activeTab === 'my-events' && (
+          <div className="tab-panel">
+            <MyEventsList />
+          </div>
+        )}
       </main>
     </div>
   )
