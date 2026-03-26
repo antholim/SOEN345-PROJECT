@@ -117,7 +117,7 @@ export function AdminScreen() {
       {showAddModal && (
         <AddEventModal
           onClose={() => setShowAddModal(false)}
-          onCreated={handleEventCreated}
+          onSaved={handleEventCreated}
         />
       )}
     </div>
