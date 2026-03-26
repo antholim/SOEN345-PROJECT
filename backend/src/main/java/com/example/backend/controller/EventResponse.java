@@ -12,6 +12,8 @@ public record EventResponse(
 	String status,
 	String venueName,
 	String venueCity,
+	String venueAddress,
+	Integer venueCapacity,
 	String categoryName
 ) {
 }

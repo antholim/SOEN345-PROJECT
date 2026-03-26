@@ -1,8 +1,51 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { getActiveEvents } from '../../services/eventService'
 import { createReservation } from '../../services/reservationService'
+import { cancelAdminEvent } from '../../services/adminEventService'
 import { useUser } from '../../contexts/UserContext'
+import { useClickOutside } from '../../hooks/useClickOutside'
+import { AddEventModal } from '../AddEventModal/AddEventModal'
 import type { Event, EventFilter } from '../../types'
+
+type KebabMenuProps = {
+  onEdit: () => void
+  onCancel: () => void
+  cancelling: boolean
+}
+
+function KebabMenu({ onEdit, onCancel, cancelling }: KebabMenuProps) {
+  const [open, setOpen] = useState(false)
+  const ref = useRef<HTMLDivElement>(null)
+  useClickOutside(ref, () => setOpen(false))
+
+  return (
+    <div className="kebab-wrap" ref={ref}>
+      <button
+        className="kebab-btn"
+        onClick={() => setOpen(v => !v)}
+        aria-label="Event actions"
+      >
+        <span />
+        <span />
+        <span />
+      </button>
+      {open && (
+        <div className="kebab-menu">
+          <button className="kebab-item kebab-item--edit" onClick={() => { setOpen(false); onEdit() }}>
+            Edit
+          </button>
+          <button
+            className="kebab-item kebab-item--cancel"
+            disabled={cancelling}
+            onClick={() => { setOpen(false); onCancel() }}
+          >
+            {cancelling ? '…' : 'Cancel'}
+          </button>
+        </div>
+      )}
+    </div>
+  )
+}
 
 const MONTH_ABBR = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
 
@@ -20,7 +63,7 @@ function formatDay(dateStr: string): string {
   return days[new Date(dateStr).getDay()]
 }
 
-export function EventList({ filter }: { filter: EventFilter }) {
+export function EventList({ filter, isAdmin }: { filter: EventFilter; isAdmin?: boolean }) {
   const { currentUser } = useUser()
   const [events, setEvents] = useState<Event[]>([])
   const [loadedFilter, setLoadedFilter] = useState<EventFilter | null>(null)
@@ -31,6 +74,8 @@ export function EventList({ filter }: { filter: EventFilter }) {
   const [quantities, setQuantities] = useState<Record<number, number>>({})
   const [reserving, setReserving] = useState<Record<number, boolean>>({})
   const [reserved, setReserved] = useState<Record<number, boolean>>({})
+  const [cancelling, setCancelling] = useState<Record<number, boolean>>({})
+  const [editingEvent, setEditingEvent] = useState<Event | null>(null)
 
   const loading = loadedFilter !== filter
 
@@ -64,6 +109,18 @@ export function EventList({ filter }: { filter: EventFilter }) {
       })
       .catch((err: Error) => setError(err.message))
       .finally(() => setReserving(prev => ({ ...prev, [eventId]: false })))
+  }
+
+  function handleEventUpdated(updated: Event) {
+    setEvents(prev => prev.map(e => e.eventId === updated.eventId ? updated : e))
+  }
+
+  function cancelEvent(eventId: number) {
+    setCancelling(prev => ({ ...prev, [eventId]: true }))
+    cancelAdminEvent(eventId)
+      .then(() => setEvents(prev => prev.filter(e => e.eventId !== eventId)))
+      .catch((err: Error) => setError(err.message))
+      .finally(() => setCancelling(prev => ({ ...prev, [eventId]: false })))
   }
 
   function loadMore() {
@@ -114,6 +171,13 @@ export function EventList({ filter }: { filter: EventFilter }) {
 
           return (
             <div key={event.eventId} className="event-row">
+              {isAdmin && (
+                <KebabMenu
+                  onEdit={() => setEditingEvent(event)}
+                  onCancel={() => cancelEvent(event.eventId)}
+                  cancelling={cancelling[event.eventId] ?? false}
+                />
+              )}
               <div className="event-date-box">
                 <span className="event-date-month">{month}</span>
                 <span className="event-date-day">{day}</span>
@@ -165,6 +229,14 @@ export function EventList({ filter }: { filter: EventFilter }) {
             {loadingMore ? 'Loading…' : 'Load more'}
           </button>
         </div>
+      )}
+
+      {editingEvent && (
+        <AddEventModal
+          event={editingEvent}
+          onClose={() => setEditingEvent(null)}
+          onSaved={updated => { handleEventUpdated(updated); setEditingEvent(null) }}
+        />
       )}
     </>
   )

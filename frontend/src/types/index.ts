@@ -27,6 +27,7 @@ export type Reservation = {
   numberOfTickets: number
   totalPrice: number
   status: string
+  eventStatus: string
 }
 
 export type Event = {
@@ -39,5 +40,7 @@ export type Event = {
   status: string
   venueName: string
   venueCity: string
+  venueAddress: string
+  venueCapacity: number
   categoryName: string
 }

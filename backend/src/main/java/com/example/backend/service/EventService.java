@@ -79,6 +79,8 @@ public class EventService {
 				e.getStatus().name(),
 				e.getVenue().getVenueName(),
 				e.getVenue().getCity(),
+				e.getVenue().getAddress(),
+				e.getVenue().getCapacity(),
 				e.getCategory().getCategoryName()
 			));
 		return new PagedEventResponse(result.getContent(), !result.isLast());

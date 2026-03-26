@@ -11,6 +11,7 @@ public record UserReservationResponse(
 	String categoryName,
 	Integer numberOfTickets,
 	BigDecimal totalPrice,
-	String status
+	String status,
+	String eventStatus
 ) {
 }

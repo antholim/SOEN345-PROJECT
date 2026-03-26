@@ -58,6 +58,9 @@ public class EventEntity {
 	@Column(name = "created_at")
 	private LocalDateTime createdAt;
 
+	@Column(name = "created_by", nullable = false)
+	private Integer createdBy;
+
 	public Integer getEventId() { return eventId; }
 	public void setEventId(Integer eventId) { this.eventId = eventId; }
 
@@ -87,4 +90,7 @@ public class EventEntity {
 
 	public LocalDateTime getCreatedAt() { return createdAt; }
 	public void setCreatedAt(LocalDateTime createdAt) { this.createdAt = createdAt; }
+
+	public Integer getCreatedBy() { return createdBy; }
+	public void setCreatedBy(Integer createdBy) { this.createdBy = createdBy; }
 }
