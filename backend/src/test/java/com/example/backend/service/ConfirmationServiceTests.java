@@ -3,7 +3,6 @@ package com.example.backend.service;
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.eq;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 import java.math.BigDecimal;
 import java.time.LocalDateTime;
@@ -14,8 +13,6 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
-import com.example.backend.model.ConfirmationEntity;
-import com.example.backend.model.ConfirmationRepository;
 import com.example.backend.model.ConfirmationType;
 import com.example.backend.model.EventEntity;
 import com.example.backend.model.ReservationEntity;
@@ -28,13 +25,13 @@ import com.example.backend.notification.SmsProvider;
 class ConfirmationServiceTests {
 
 	@Mock
-	private ConfirmationRepository confirmationRepository;
-
-	@Mock
 	private EmailProvider emailProvider;
 
 	@Mock
 	private SmsProvider smsProvider;
+
+	@Mock
+	private ConfirmationHistoryService historyService;
 
 	@InjectMocks
 	private DefaultConfirmationService confirmationService;
@@ -70,7 +67,7 @@ class ConfirmationServiceTests {
 
 		verify(emailProvider).sendEmail(eq("jane@example.com"), eq("Reservation Confirmation"), any());
 		verify(smsProvider).sendSms(eq("514-123-4567"), any());
-		verify(confirmationRepository, org.mockito.Mockito.times(2)).save(any(ConfirmationEntity.class));
+		verify(historyService, org.mockito.Mockito.times(2)).saveHistory(eq(r), any(ConfirmationType.class), any());
 	}
 
 	@Test
@@ -81,6 +78,6 @@ class ConfirmationServiceTests {
 
 		verify(emailProvider).sendEmail(eq("jane@example.com"), eq("Reservation Confirmation"), any());
 		verify(smsProvider).sendSms(eq("514-123-4567"), any());
-		verify(confirmationRepository, org.mockito.Mockito.times(2)).save(any(ConfirmationEntity.class));
+		verify(historyService, org.mockito.Mockito.times(2)).saveHistory(eq(r), any(ConfirmationType.class), any());
 	}
 }
