@@ -26,3 +26,16 @@ spring:
 logging:
   level:
     org.flywaydb: info
+
+notification:
+  email:
+    provider: ${NOTIFICATION_EMAIL_PROVIDER}
+    sendgrid:
+      api-key: ${SENDGRID_API_KEY:}
+      from-email: ${NOTIFICATION_EMAIL_FROM:}
+  sms:
+    provider: ${NOTIFICATION_SMS_PROVIDER}
+    twilio:
+      account-sid: ${TWILIO_ACCOUNT_SID:}
+      auth-token: ${TWILIO_AUTH_TOKEN:}
+      from-phone: ${TWILIO_FROM_PHONE:}

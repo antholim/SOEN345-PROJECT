@@ -24,13 +24,16 @@ public class ReservationService {
 	private final ReservationRepository reservationRepository;
 	private final EventRepository eventRepository;
 	private final UserRepository userRepository;
+	private final ConfirmationService confirmationService;
 
 	public ReservationService(ReservationRepository reservationRepository,
 							  EventRepository eventRepository,
-							  UserRepository userRepository) {
+							  UserRepository userRepository,
+							  ConfirmationService confirmationService) {
 		this.reservationRepository = reservationRepository;
 		this.eventRepository = eventRepository;
 		this.userRepository = userRepository;
+		this.confirmationService = confirmationService;
 	}
 
 	@Transactional
@@ -58,6 +61,8 @@ public class ReservationService {
 
 		var saved = reservationRepository.save(reservation);
 
+		confirmationService.sendReservationConfirmation(saved);
+
 		return new ReservationResponse(
 			saved.getReservationId(),
 			event.getTitle(),
@@ -81,7 +86,9 @@ public class ReservationService {
 		eventRepository.save(event);
 
 		reservation.setStatus(ReservationStatus.CANCELLED);
-		reservationRepository.save(reservation);
+		var saved = reservationRepository.save(reservation);
+
+		confirmationService.sendCancellationConfirmation(saved);
 	}
 
 	@Transactional(readOnly = true)
