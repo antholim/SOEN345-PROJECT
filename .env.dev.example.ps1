@@ -5,7 +5,7 @@ $env:SPRING_DATASOURCE_USERNAME = 'your-database-username'
 $env:SPRING_DATASOURCE_PASSWORD = 'your-database-password'
 
 # Notification Provider Config (Options: logger, sendgrid, twilio)
-$env:NOTIFICATION_EMAIL_PROVIDER = 'logger'
+$env:NOTIFICATION_EMAIL_PROVIDER = 'sendgrid'
 $env:NOTIFICATION_SMS_PROVIDER = 'twilio'
 
 # SendGrid Email (Required if provider is 'sendgrid')
