@@ -146,4 +146,144 @@ class AuthServiceTests {
 		assertEquals("+1 438 555 0101", response.phoneNumber());
 		assertNull(response.email());
 	}
+
+	@Test
+	void loginByEmailReturnsUser() {
+		UserEntity user = new UserEntity();
+		user.setUserId(30);
+		user.setFirstName("Eli");
+		user.setLastName("Grant");
+		user.setEmail("eli@example.com");
+		user.setPasswordHash("stored-hash");
+		user.setRole(UserRole.CUSTOMER);
+		user.setCreatedAt(LocalDateTime.of(2026, 3, 16, 19, 0));
+
+		when(userRepository.findByEmailIgnoreCase("eli@example.com")).thenReturn(Optional.of(user));
+		when(passwordHasher.matches("password123", "stored-hash")).thenReturn(true);
+
+		AuthUserResponse response = authService.login(new LoginRequest("eli@example.com", "password123"));
+
+		assertEquals(30, response.userId());
+		assertEquals("eli@example.com", response.email());
+		assertEquals("Eli", response.firstName());
+	}
+
+	@Test
+	void loginWithWrongPasswordThrowsUnauthorized() {
+		UserEntity user = new UserEntity();
+		user.setUserId(30);
+		user.setEmail("eli@example.com");
+		user.setPasswordHash("stored-hash");
+
+		when(userRepository.findByEmailIgnoreCase("eli@example.com")).thenReturn(Optional.of(user));
+		when(passwordHasher.matches("wrongpassword", "stored-hash")).thenReturn(false);
+
+		ResponseStatusException ex = assertThrows(
+			ResponseStatusException.class,
+			() -> authService.login(new LoginRequest("eli@example.com", "wrongpassword"))
+		);
+
+		assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusCode());
+	}
+
+	@Test
+	void loginWithBlankIdentifierThrowsBadRequest() {
+		ResponseStatusException ex = assertThrows(
+			ResponseStatusException.class,
+			() -> authService.login(new LoginRequest("  ", "password123"))
+		);
+
+		assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
+	}
+
+	@Test
+	void loginWithBlankPasswordThrowsBadRequest() {
+		ResponseStatusException ex = assertThrows(
+			ResponseStatusException.class,
+			() -> authService.login(new LoginRequest("eli@example.com", "  "))
+		);
+
+		assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
+	}
+
+	@Test
+	void loginWithUnknownIdentifierThrowsUnauthorized() {
+		when(userRepository.findByEmailIgnoreCase("nobody@example.com")).thenReturn(Optional.empty());
+		when(userRepository.findByPhoneNumber("nobody@example.com")).thenReturn(Optional.empty());
+
+		ResponseStatusException ex = assertThrows(
+			ResponseStatusException.class,
+			() -> authService.login(new LoginRequest("nobody@example.com", "password123"))
+		);
+
+		assertEquals(HttpStatus.UNAUTHORIZED, ex.getStatusCode());
+	}
+
+	@Test
+	void registerRejectsInvalidEmailFormat() {
+		ResponseStatusException ex = assertThrows(
+			ResponseStatusException.class,
+			() -> authService.register(new RegistrationRequest("Jo", "Doe", "not-an-email", null, "password123"))
+		);
+
+		assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
+		verify(userRepository, never()).save(any(UserEntity.class));
+	}
+
+	@Test
+	void registerRejectsInvalidPhoneFormat() {
+		ResponseStatusException ex = assertThrows(
+			ResponseStatusException.class,
+			() -> authService.register(new RegistrationRequest("Jo", "Doe", null, "abc", "password123"))
+		);
+
+		assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
+		verify(userRepository, never()).save(any(UserEntity.class));
+	}
+
+	@Test
+	void registerRejectsShortPassword() {
+		ResponseStatusException ex = assertThrows(
+			ResponseStatusException.class,
+			() -> authService.register(new RegistrationRequest("Jo", "Doe", "jo@example.com", null, "short"))
+		);
+
+		assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
+		verify(userRepository, never()).save(any(UserEntity.class));
+	}
+
+	@Test
+	void registerRejectsDuplicatePhoneNumber() {
+		when(userRepository.existsByPhoneNumber("+1 514 555 0199")).thenReturn(true);
+
+		ResponseStatusException ex = assertThrows(
+			ResponseStatusException.class,
+			() -> authService.register(new RegistrationRequest("Jo", "Doe", null, "+1 514 555 0199", "password123"))
+		);
+
+		assertEquals(HttpStatus.CONFLICT, ex.getStatusCode());
+		verify(userRepository, never()).save(any(UserEntity.class));
+	}
+
+	@Test
+	void registerRejectsMissingFirstName() {
+		ResponseStatusException ex = assertThrows(
+			ResponseStatusException.class,
+			() -> authService.register(new RegistrationRequest("  ", "Doe", "jo@example.com", null, "password123"))
+		);
+
+		assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
+		verify(userRepository, never()).save(any(UserEntity.class));
+	}
+
+	@Test
+	void registerRejectsMissingLastName() {
+		ResponseStatusException ex = assertThrows(
+			ResponseStatusException.class,
+			() -> authService.register(new RegistrationRequest("Jo", " ", "jo@example.com", null, "password123"))
+		);
+
+		assertEquals(HttpStatus.BAD_REQUEST, ex.getStatusCode());
+		verify(userRepository, never()).save(any(UserEntity.class));
+	}
 }
