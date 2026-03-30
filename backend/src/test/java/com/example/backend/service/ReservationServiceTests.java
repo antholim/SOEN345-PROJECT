@@ -50,6 +50,9 @@ class ReservationServiceTests {
 	@Mock
 	private UserRepository userRepository;
 
+	@Mock
+	private ConfirmationService confirmationService;
+
 	@InjectMocks
 	private ReservationService reservationService;
 
@@ -134,6 +137,7 @@ class ReservationServiceTests {
 		assertEquals(3, response.numberOfTickets());
 		assertEquals(new BigDecimal("150.00"), response.totalPrice());
 		assertEquals("CONFIRMED", response.status());
+		verify(confirmationService).sendReservationConfirmation(any(ReservationEntity.class));
 	}
 
 	@Test
@@ -211,6 +215,7 @@ class ReservationServiceTests {
 
 		verify(reservationRepository).save(reservationCaptor.capture());
 		assertEquals(ReservationStatus.CANCELLED, reservationCaptor.getValue().getStatus());
+		verify(confirmationService).sendCancellationConfirmation(any(ReservationEntity.class));
 	}
 
 	@Test
