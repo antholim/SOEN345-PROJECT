@@ -45,3 +45,15 @@ This opens:
 
 - Java 23
 - Node.js and npm
+
+## Deploying To Vercel
+
+This repository is split into:
+- `frontend/`: Vite React app
+- `backend/`: Spring Boot API
+
+Vercel should build and serve the frontend only. The root `vercel.json` points Vercel at `frontend/` so deployments from the repository root produce the static site from `frontend/dist`.
+
+For production, set `VITE_API_BASE_URL` in Vercel to the deployed backend URL. Without that variable, the frontend will call relative `/api` paths, which only works with the local Vite dev proxy.
+
+The Spring Boot backend is not deployed by this Vercel configuration and should be hosted separately.
