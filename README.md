@@ -54,6 +54,16 @@ This repository is split into:
 
 Vercel should build and serve the frontend only. The root `vercel.json` points Vercel at `frontend/` so deployments from the repository root produce the static site from `frontend/dist`.
 
-For production, set `VITE_API_BASE_URL` in Vercel to the deployed backend URL. Without that variable, the frontend will call relative `/api` paths, which only works with the local Vite dev proxy.
+The Spring Boot backend is not deployed by this Vercel configuration and should be hosted separately. Vercel does not run this repository's Dockerized Spring Boot server as part of the current setup.
 
-The Spring Boot backend is not deployed by this Vercel configuration and should be hosted separately.
+### Production setup
+
+1. Deploy the backend somewhere that can run Spring Boot and PostgreSQL-backed workloads.
+2. If you want the browser to call the backend directly, set `VITE_API_BASE_URL` in Vercel to that backend URL, for example:
+   `https://your-backend.example.com`
+3. In the backend environment, set `APP_CORS_ALLOWED_ORIGINS` to the frontend origin or origins, for example:
+   `https://soen345project.vercel.app,https://your-preview-domain.vercel.app`
+
+When `VITE_API_BASE_URL` is not set, the frontend uses relative `/api` paths. That is useful for local development with the Vite proxy, but it is not enough for production unless an API is actually mounted on the same domain.
+
+This repository now includes a Vercel rewrite from `/api/*` to the Railway backend. That means the simplest production setup is to leave `VITE_API_BASE_URL` unset in Vercel so the browser calls `/api/...` on the same Vercel domain and Vercel proxies those requests to Railway.
