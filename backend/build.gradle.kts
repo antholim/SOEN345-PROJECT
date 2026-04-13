@@ -44,6 +44,13 @@ dependencies {
 tasks.withType<Test> {
 	useJUnitPlatform()
 	finalizedBy(tasks.jacocoTestReport)
+	testLogging {
+		events(
+			org.gradle.api.tasks.testing.logging.TestLogEvent.PASSED,
+			org.gradle.api.tasks.testing.logging.TestLogEvent.SKIPPED,
+			org.gradle.api.tasks.testing.logging.TestLogEvent.FAILED
+		)
+	}
 }
 
 tasks.withType<JavaCompile> {
@@ -56,4 +63,3 @@ tasks.jacocoTestReport {
 		xml.required = true
 	}
 }
-
